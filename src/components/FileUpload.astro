@@ -1,0 +1,41 @@
+---
+// File upload component with drag & drop
+---
+
+<div id="upload-container" class="upload-zone">
+  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M32 8V40M32 8L20 20M32 8L44 20"
+      stroke="#007AFF"
+      stroke-width="4"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M8 40V52C8 54.2091 9.79086 56 12 56H52C54.2091 56 56 54.2091 56 52V40"
+      stroke="#007AFF"
+      stroke-width="4"
+      stroke-linecap="round"
+    />
+  </svg>
+  <div>
+    <p class="text-lg font-medium mb-1">Drop your screenshot here</p>
+    <p class="text-secondary text-small">or click to browse</p>
+  </div>
+  <input
+    type="file"
+    id="file-input"
+    accept="image/*"
+    style="display: none;"
+  />
+</div>
+
+<style>
+  #upload-container {
+    text-align: center;
+  }
+
+  svg {
+    margin-bottom: 16px;
+  }
+</style>

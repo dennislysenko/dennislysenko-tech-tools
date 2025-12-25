@@ -1,0 +1,422 @@
+---
+import Layout from '../layouts/Layout.astro';
+import FileUpload from '../components/FileUpload.astro';
+import ImagePreview from '../components/ImagePreview.astro';
+import DeviceToggle from '../components/DeviceToggle.astro';
+import OrientationToggle from '../components/OrientationToggle.astro';
+import SizeList from '../components/SizeList.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<Layout>
+  <main class="container mx-auto px-6 py-12 max-w-6xl">
+    <!-- Hero Section -->
+    <div class="text-center mb-16">
+      <h1 class="text-5xl md:text-6xl font-bold mb-4 tracking-tight">
+        Stop fighting App Store screenshot requirements
+      </h1>
+      <p class="text-xl text-secondary max-w-2xl mx-auto">
+        Resize your screenshots for every iPhone and iPad size in seconds. Free, fast, and runs entirely in your browser.
+      </p>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid md:grid-cols-2 gap-8 mb-12">
+      <!-- Left Column - Upload & Preview -->
+      <div>
+        <FileUpload />
+        <ImagePreview />
+      </div>
+
+      <!-- Right Column - Controls -->
+      <div>
+        <div class="bg-white rounded-2xl p-6 shadow-md">
+          <h2 class="text-2xl font-semibold mb-6">Configuration</h2>
+
+          <DeviceToggle />
+          <OrientationToggle />
+          <SizeList />
+
+          <!-- Error Message -->
+          <div id="error-container" style="display: none;">
+            <div class="error-message">
+              <span id="error-text"></span>
+            </div>
+          </div>
+
+          <!-- Download Button -->
+          <button
+            id="download-button"
+            class="btn-primary w-full mt-6"
+            disabled
+          >
+            <span id="button-text">Download Screenshots</span>
+            <span id="button-spinner" class="spinner" style="display: none;"></span>
+          </button>
+
+          <p id="selected-count" class="text-center text-sm text-secondary mt-3">
+            Select sizes to download
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <Footer />
+  </main>
+</Layout>
+
+<script>
+  import { getSizesByDevice, getDimensionsForOrientation } from '../data/screenshotSizes';
+  import { isImageFile } from '../utils/imageResize';
+  import { createScreenshotZip, downloadBlob, generateZipFilename } from '../utils/zipGenerator';
+  import type { AppState, DeviceMode, Orientation } from '../utils/types';
+
+  // Global state
+  const state: AppState = {
+    uploadedFile: null,
+    uploadedImageUrl: null,
+    deviceMode: 'iphone',
+    orientation: 'portrait',
+    selectedSizes: new Set<string>(),
+    availableSizes: getSizesByDevice('iphone'),
+    error: null,
+    isProcessing: false,
+  };
+
+  // DOM Elements
+  const uploadContainer = document.getElementById('upload-container')!;
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const previewContainer = document.getElementById('image-preview-container')!;
+  const previewImage = document.getElementById('preview-image') as HTMLImageElement;
+  const imageDimensions = document.getElementById('image-dimensions')!;
+  const clearButton = document.getElementById('clear-button')!;
+  const deviceToggle = document.getElementById('device-toggle')!;
+  const orientationToggle = document.getElementById('orientation-toggle')!;
+  const sizeListContainer = document.getElementById('size-list-container')!;
+  const selectAllCheckbox = document.getElementById('select-all') as HTMLInputElement;
+  const downloadButton = document.getElementById('download-button') as HTMLButtonElement;
+  const buttonText = document.getElementById('button-text')!;
+  const buttonSpinner = document.getElementById('button-spinner')!;
+  const selectedCount = document.getElementById('selected-count')!;
+  const errorContainer = document.getElementById('error-container')!;
+  const errorText = document.getElementById('error-text')!;
+
+  // Initialize
+  init();
+
+  function init() {
+    setupFileUpload();
+    setupToggles();
+    renderSizeList();
+    updateDownloadButton();
+  }
+
+  // ============================================================================
+  // File Upload
+  // ============================================================================
+
+  function setupFileUpload() {
+    // Click to upload
+    uploadContainer.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    // File input change
+    fileInput.addEventListener('change', (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (files && files[0]) {
+        handleFile(files[0]);
+      }
+    });
+
+    // Drag and drop
+    uploadContainer.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadContainer.classList.add('dragover');
+    });
+
+    uploadContainer.addEventListener('dragleave', () => {
+      uploadContainer.classList.remove('dragover');
+    });
+
+    uploadContainer.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadContainer.classList.remove('dragover');
+
+      const files = e.dataTransfer?.files;
+      if (files && files[0]) {
+        handleFile(files[0]);
+      }
+    });
+
+    // Clear button
+    clearButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      clearUpload();
+    });
+  }
+
+  function handleFile(file: File) {
+    // Validate file type
+    if (!isImageFile(file)) {
+      showError('Please upload a valid image file (PNG, JPEG, etc.)');
+      return;
+    }
+
+    clearError();
+
+    // Update state
+    state.uploadedFile = file;
+    state.uploadedImageUrl = URL.createObjectURL(file);
+
+    // Show preview
+    previewImage.src = state.uploadedImageUrl;
+    previewImage.onload = () => {
+      const img = previewImage;
+      imageDimensions.textContent = `${img.naturalWidth} × ${img.naturalHeight} px`;
+    };
+
+    uploadContainer.style.display = 'none';
+    previewContainer.style.display = 'block';
+
+    updateDownloadButton();
+  }
+
+  function clearUpload() {
+    if (state.uploadedImageUrl) {
+      URL.revokeObjectURL(state.uploadedImageUrl);
+    }
+
+    state.uploadedFile = null;
+    state.uploadedImageUrl = null;
+
+    previewImage.src = '';
+    uploadContainer.style.display = 'flex';
+    previewContainer.style.display = 'none';
+
+    // Reset file input
+    fileInput.value = '';
+
+    updateDownloadButton();
+  }
+
+  // ============================================================================
+  // Toggles
+  // ============================================================================
+
+  function setupToggles() {
+    // Device toggle
+    deviceToggle.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.hasAttribute('data-device')) {
+        const device = target.getAttribute('data-device') as DeviceMode;
+        setDevice(device);
+      }
+    });
+
+    // Orientation toggle
+    orientationToggle.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.hasAttribute('data-orientation')) {
+        const orientation = target.getAttribute('data-orientation') as Orientation;
+        setOrientation(orientation);
+      }
+    });
+  }
+
+  function setDevice(device: DeviceMode) {
+    if (state.deviceMode === device) return;
+
+    state.deviceMode = device;
+    state.availableSizes = getSizesByDevice(device);
+    state.selectedSizes.clear();
+
+    // Update UI
+    deviceToggle.querySelectorAll('.segmented-button').forEach((btn) => {
+      const btnDevice = btn.getAttribute('data-device');
+      btn.classList.toggle('active', btnDevice === device);
+    });
+
+    renderSizeList();
+    updateDownloadButton();
+  }
+
+  function setOrientation(orientation: Orientation) {
+    if (state.orientation === orientation) return;
+
+    state.orientation = orientation;
+
+    // Update UI
+    orientationToggle.querySelectorAll('.segmented-button').forEach((btn) => {
+      const btnOrientation = btn.getAttribute('data-orientation');
+      btn.classList.toggle('active', btnOrientation === orientation);
+    });
+
+    renderSizeList();
+  }
+
+  // ============================================================================
+  // Size List
+  // ============================================================================
+
+  function renderSizeList() {
+    sizeListContainer.innerHTML = '';
+
+    state.availableSizes.forEach((size) => {
+      const { width, height } = getDimensionsForOrientation(size, state.orientation);
+      const isChecked = state.selectedSizes.has(size.id);
+
+      const item = document.createElement('label');
+      item.className = 'checkbox-item';
+      item.innerHTML = `
+        <div class="checkbox-wrapper">
+          <input type="checkbox" data-size-id="${size.id}" ${isChecked ? 'checked' : ''} />
+          <div class="checkbox-custom ${isChecked ? 'checked' : ''}"></div>
+        </div>
+        <div class="flex-1">
+          <div class="font-medium text-sm">${size.displayName} - ${width} × ${height}</div>
+          ${size.description ? `<div class="text-tiny text-secondary mt-0.5">${size.description}</div>` : ''}
+        </div>
+      `;
+
+      item.addEventListener('click', () => toggleSize(size.id));
+      sizeListContainer.appendChild(item);
+    });
+
+    updateSelectAllCheckbox();
+  }
+
+  function toggleSize(sizeId: string) {
+    if (state.selectedSizes.has(sizeId)) {
+      state.selectedSizes.delete(sizeId);
+    } else {
+      state.selectedSizes.add(sizeId);
+    }
+
+    // Update checkbox visual state
+    const checkbox = sizeListContainer.querySelector(`[data-size-id="${sizeId}"]`) as HTMLInputElement;
+    const customCheckbox = checkbox?.nextElementSibling;
+
+    if (checkbox) {
+      checkbox.checked = state.selectedSizes.has(sizeId);
+      customCheckbox?.classList.toggle('checked', checkbox.checked);
+    }
+
+    updateSelectAllCheckbox();
+    updateDownloadButton();
+  }
+
+  function updateSelectAllCheckbox() {
+    const allSelected = state.availableSizes.every((size) => state.selectedSizes.has(size.id));
+    selectAllCheckbox.checked = allSelected;
+    selectAllCheckbox.parentElement?.querySelector('.checkbox-custom')?.classList.toggle('checked', allSelected);
+  }
+
+  selectAllCheckbox.addEventListener('change', () => {
+    const shouldSelectAll = selectAllCheckbox.checked;
+
+    if (shouldSelectAll) {
+      state.availableSizes.forEach((size) => state.selectedSizes.add(size.id));
+    } else {
+      state.selectedSizes.clear();
+    }
+
+    renderSizeList();
+    updateDownloadButton();
+  });
+
+  // ============================================================================
+  // Download
+  // ============================================================================
+
+  function updateDownloadButton() {
+    const hasFile = state.uploadedFile !== null;
+    const hasSizes = state.selectedSizes.size > 0;
+    const canDownload = hasFile && hasSizes && !state.isProcessing;
+
+    downloadButton.disabled = !canDownload;
+
+    // Update selected count text
+    if (hasSizes) {
+      const count = state.selectedSizes.size;
+      selectedCount.textContent = `${count} size${count > 1 ? 's' : ''} selected`;
+    } else {
+      selectedCount.textContent = 'Select sizes to download';
+    }
+  }
+
+  downloadButton.addEventListener('click', async () => {
+    if (!state.uploadedFile || state.selectedSizes.size === 0) return;
+
+    state.isProcessing = true;
+    updateDownloadButton();
+
+    // Show loading state
+    buttonText.textContent = 'Generating...';
+    buttonSpinner.style.display = 'inline-block';
+
+    try {
+      // Get selected sizes
+      const selectedSizeObjects = state.availableSizes.filter((size) =>
+        state.selectedSizes.has(size.id)
+      );
+
+      // Create ZIP with progress callback
+      const zipBlob = await createScreenshotZip(
+        state.uploadedFile,
+        selectedSizeObjects,
+        state.orientation,
+        (current, total) => {
+          buttonText.textContent = `Processing ${current}/${total}...`;
+        }
+      );
+
+      // Download the ZIP
+      const filename = generateZipFilename();
+      downloadBlob(zipBlob, filename);
+
+      clearError();
+    } catch (error) {
+      console.error('Failed to generate screenshots:', error);
+      showError('Failed to generate screenshots. Please try again.');
+    } finally {
+      state.isProcessing = false;
+      buttonText.textContent = 'Download Screenshots';
+      buttonSpinner.style.display = 'none';
+      updateDownloadButton();
+    }
+  });
+
+  // ============================================================================
+  // Error Handling
+  // ============================================================================
+
+  function showError(message: string) {
+    state.error = message;
+    errorText.textContent = message;
+    errorContainer.style.display = 'block';
+  }
+
+  function clearError() {
+    state.error = null;
+    errorContainer.style.display = 'none';
+  }
+</script>
+
+<style>
+  .container {
+    min-height: 100vh;
+  }
+
+  main {
+    max-width: 1200px;
+  }
+
+  h1 {
+    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+</style>
