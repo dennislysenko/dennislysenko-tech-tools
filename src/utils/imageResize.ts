@@ -59,17 +59,10 @@ export async function resizeImage(
   // Load the image
   const img = await loadImage(file);
 
-  // Calculate scale to fit within target dimensions while preserving aspect ratio
-  const scale = Math.min(targetWidth / img.width, targetHeight / img.height);
-
-  // Calculate actual output dimensions (preserves aspect ratio)
-  const outputWidth = Math.round(img.width * scale);
-  const outputHeight = Math.round(img.height * scale);
-
-  // Create canvas with scaled dimensions (no letterboxing)
+  // Create canvas with exact target dimensions
   const canvas = document.createElement('canvas');
-  canvas.width = outputWidth;
-  canvas.height = outputHeight;
+  canvas.width = targetWidth;
+  canvas.height = targetHeight;
 
   const ctx = canvas.getContext('2d');
   if (!ctx) {
@@ -80,8 +73,8 @@ export async function resizeImage(
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  // Draw the image to fill the entire canvas
-  ctx.drawImage(img, 0, 0, outputWidth, outputHeight);
+  // Draw the image stretched to fill the entire canvas
+  ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
 
   // Convert canvas to blob
   return new Promise((resolve, reject) => {
