@@ -143,10 +143,22 @@ After creating the tool page:
 
 ### 5. Build and Deploy
 
+**This project is deployed to Vercel and auto-deploys on every push to `main`.**
+
+No manual deployment needed! Just commit and push:
+
 ```bash
-npm run build
-# Deploy to production
+git add .
+git commit -m "Add new tool"
+git push origin main
 ```
+
+Vercel will automatically:
+- Build the Astro project
+- Run deployment checks
+- Deploy to production at https://tools.dennislysenko.tech
+
+Monitor deployment status at: https://vercel.com/dashboard
 
 ### 6. Post-Deployment Verification
 
