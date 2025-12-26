@@ -182,3 +182,23 @@ export function getDimensionsForOrientation(
   }
   return { width: size.width, height: size.height };
 }
+
+// Common sizes that cover most current App Store requirements
+export const COMMON_SIZES: Record<DeviceMode, string[]> = {
+  iphone: [
+    'iphone_6_9',      // iPhone 16 Pro Max
+    'iphone_6_7_new',  // iPhone 14/15/16 Plus & Pro Max
+    'iphone_6_3',      // iPhone 16 Pro
+    'iphone_6_1',      // iPhone 12/13/14
+    'iphone_5_5',      // Legacy Plus models
+  ],
+  ipad: [
+    'ipad_13',         // Latest iPad Pro/Air
+    'ipad_12_9',       // iPad Pro 12.9"
+    'ipad_11',         // iPad Pro 11"
+  ],
+};
+
+export function getCommonSizeIds(device: DeviceMode): string[] {
+  return COMMON_SIZES[device];
+}

@@ -2,17 +2,24 @@
 // Footer component with attribution
 ---
 
-<footer class="py-12 mt-20 text-center border-t border-gray-200">
-  <p class="text-secondary text-small">
-    Built by <a
-      href="https://dennislysenko.tech"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="text-blue-600 hover:text-blue-700 transition-colors font-medium"
-    >
-      Dennis Lysenko
-    </a>
-  </p>
+<footer class="py-16 mt-24 text-center border-t">
+  <div class="max-w-2xl mx-auto px-6">
+    <div class="mb-6 p-6 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl border border-blue-100">
+      <p class="text-base text-gray-700 leading-relaxed">
+        This tool was <strong class="text-blue-600">AI-coded with Claude</strong> to solve a recurring problem I faced as an app owner: spending hours manually resizing screenshots for App Store submissions. Now it takes seconds.
+      </p>
+    </div>
+    <p class="text-secondary text-sm">
+      Built by <a
+        href="https://dennislysenko.tech"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="font-semibold hover:text-blue-600 transition-colors"
+      >
+        Dennis Lysenko
+      </a>
+    </p>
+  </div>
 </footer>
 
 <style>
@@ -20,12 +27,12 @@
     border-color: var(--color-gray-2);
   }
 
-  a {
+  footer a {
     color: var(--color-blue);
     text-decoration: none;
   }
 
-  a:hover {
+  footer a:hover {
     color: var(--color-blue-hover);
   }
 </style>

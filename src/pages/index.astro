@@ -12,11 +12,14 @@ import '../styles/global.css';
 <Layout>
   <main class="container mx-auto px-6 py-12 max-w-6xl">
     <!-- Hero Section -->
-    <div class="text-center mb-16">
-      <h1 class="text-5xl md:text-6xl font-bold mb-4 tracking-tight">
-        Stop fighting App Store screenshot requirements
-      </h1>
-      <p class="text-xl text-secondary max-w-2xl mx-auto">
+    <div class="text-center mb-20">
+      <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
+        <h1 class="text-hero">
+          Stop fighting App Store screenshot requirements
+        </h1>
+        <span class="beta-badge">BETA</span>
+      </div>
+      <p class="text-subhero text-secondary max-w-2xl mx-auto">
         Resize your screenshots for every iPhone and iPad size in seconds. Free, fast, and runs entirely in your browser.
       </p>
     </div>
@@ -31,12 +34,20 @@ import '../styles/global.css';
 
       <!-- Right Column - Controls -->
       <div>
-        <div class="bg-white rounded-2xl p-6 shadow-md">
-          <h2 class="text-2xl font-semibold mb-6">Configuration</h2>
+        <div class="bg-white rounded-2xl p-8 md:p-10 shadow-md">
+          <h2 class="text-section-title mb-8">Configuration</h2>
 
-          <DeviceToggle />
-          <OrientationToggle />
-          <SizeList />
+          <div class="config-section">
+            <DeviceToggle />
+          </div>
+
+          <div class="config-section">
+            <OrientationToggle />
+          </div>
+
+          <div class="config-section">
+            <SizeList />
+          </div>
 
           <!-- Error Message -->
           <div id="error-container" style="display: none;">
@@ -321,6 +332,26 @@ import '../styles/global.css';
     } else {
       state.selectedSizes.clear();
     }
+
+    renderSizeList();
+    updateDownloadButton();
+  });
+
+  // Select Common button handler
+  const selectCommonButton = document.getElementById('select-common');
+  selectCommonButton?.addEventListener('click', async () => {
+    const { getCommonSizeIds } = await import('../data/screenshotSizes');
+    const commonIds = getCommonSizeIds(state.deviceMode);
+
+    // Clear all first
+    state.selectedSizes.clear();
+
+    // Add common sizes
+    commonIds.forEach(id => {
+      if (state.availableSizes.some(size => size.id === id)) {
+        state.selectedSizes.add(id);
+      }
+    });
 
     renderSizeList();
     updateDownloadButton();

@@ -4,17 +4,29 @@
 
 <div class="mb-6">
   <div class="flex items-center justify-between mb-4">
-    <label class="text-sm font-medium text-secondary">Screenshot Sizes</label>
-    <label class="checkbox-item py-2 px-0 hover:bg-transparent">
-      <div class="checkbox-wrapper">
-        <input
-          type="checkbox"
-          id="select-all"
-        />
-        <div class="checkbox-custom"></div>
-      </div>
-      <span class="text-sm font-medium">Select All</span>
-    </label>
+    <label class="control-label mb-0">Screenshot Sizes</label>
+    <div class="flex gap-2">
+      <button
+        id="select-common"
+        class="select-preset-btn"
+        type="button"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 1L10.5 6H13.5L9 9.5L10.5 14.5L8 11L5.5 14.5L7 9.5L2.5 6H5.5L8 1Z" fill="currentColor"/>
+        </svg>
+        Select Common
+      </button>
+      <label class="checkbox-item py-2 px-3 hover:bg-gray-50 rounded-lg mb-0">
+        <div class="checkbox-wrapper">
+          <input
+            type="checkbox"
+            id="select-all"
+          />
+          <div class="checkbox-custom"></div>
+        </div>
+        <span class="text-sm font-medium">Select All</span>
+      </label>
+    </div>
   </div>
 
   <div id="size-list-container" class="size-list bg-white rounded-xl p-2">
