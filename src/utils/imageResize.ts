@@ -59,34 +59,29 @@ export async function resizeImage(
   // Load the image
   const img = await loadImage(file);
 
-  // Create canvas with target dimensions
+  // Calculate scale to fit within target dimensions while preserving aspect ratio
+  const scale = Math.min(targetWidth / img.width, targetHeight / img.height);
+
+  // Calculate actual output dimensions (preserves aspect ratio)
+  const outputWidth = Math.round(img.width * scale);
+  const outputHeight = Math.round(img.height * scale);
+
+  // Create canvas with scaled dimensions (no letterboxing)
   const canvas = document.createElement('canvas');
-  canvas.width = targetWidth;
-  canvas.height = targetHeight;
+  canvas.width = outputWidth;
+  canvas.height = outputHeight;
 
   const ctx = canvas.getContext('2d');
   if (!ctx) {
     throw new Error('Failed to get canvas context');
   }
 
-  // Fill with white background (for letterboxing)
-  ctx.fillStyle = '#FFFFFF';
-  ctx.fillRect(0, 0, targetWidth, targetHeight);
-
-  // Calculate fit dimensions with letterboxing
-  const { width, height, offsetX, offsetY } = calculateFitDimensions(
-    img.width,
-    img.height,
-    targetWidth,
-    targetHeight
-  );
-
   // Enable high-quality image smoothing
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  // Draw the image centered with letterboxing
-  ctx.drawImage(img, offsetX, offsetY, width, height);
+  // Draw the image to fill the entire canvas
+  ctx.drawImage(img, 0, 0, outputWidth, outputHeight);
 
   // Convert canvas to blob
   return new Promise((resolve, reject) => {
