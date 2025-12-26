@@ -2,37 +2,112 @@
 // Footer component with attribution
 ---
 
-<footer class="py-16 mt-24 text-center border-t">
-  <div class="max-w-2xl mx-auto px-6">
-    <div class="mb-6 p-6 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl border border-blue-100">
-      <p class="text-base text-gray-700 leading-relaxed">
-        This tool was <strong class="text-blue-600">AI-coded with Claude</strong> to solve a recurring problem I faced as an app owner: spending hours manually resizing screenshots for App Store submissions. Now it takes seconds.
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-message">
+      <p class="footer-text">
+        This tool was AI-coded with Claude to solve a recurring problem I faced as an app owner: spending hours manually resizing screenshots for App Store submissions. Now it takes seconds.
       </p>
     </div>
-    <p class="text-secondary text-sm">
-      Built by <a
-        href="https://dennislysenko.tech"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="font-semibold hover:text-blue-600 transition-colors"
-      >
-        Dennis Lysenko
-      </a>
-    </p>
+    <div class="footer-attribution">
+      <p class="footer-credit">
+        Built by <a
+          href="https://dennislysenko.tech"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="footer-link"
+        >
+          Dennis Lysenko
+        </a>
+      </p>
+    </div>
   </div>
 </footer>
 
 <style>
-  footer {
-    border-color: var(--color-gray-2);
+  .footer {
+    margin-top: clamp(5rem, 10vw, 8rem);
+    padding-top: clamp(3rem, 6vw, 4rem);
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+    border-top: 1px solid var(--color-gray-2);
   }
 
-  footer a {
-    color: var(--color-blue);
+  .footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 4vw, 3rem);
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .footer-message {
+    max-width: 700px;
+  }
+
+  .footer-text {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+    font-weight: 400;
+  }
+
+  .footer-attribution {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer-credit {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    font-weight: 400;
+  }
+
+  .footer-link {
+    color: var(--color-text);
     text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    transition: color 0.2s ease;
   }
 
-  footer a:hover {
-    color: var(--color-blue-hover);
+  .footer-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-link:hover {
+    color: var(--color-blue);
+  }
+
+  .footer-link:hover::after {
+    opacity: 1;
+  }
+
+  @media (min-width: 768px) {
+    .footer-content {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .footer-attribution {
+      flex-shrink: 0;
+      padding-top: 0.125rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .footer-message {
+      max-width: 800px;
+    }
   }
 </style>
