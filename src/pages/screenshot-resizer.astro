@@ -340,7 +340,10 @@ const jsonLd = {
         </div>
       `;
 
-      item.addEventListener('click', () => toggleSize(size.id));
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleSize(size.id);
+      });
       sizeListContainer.appendChild(item);
     });
 
