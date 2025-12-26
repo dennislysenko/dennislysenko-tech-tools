@@ -7,69 +7,117 @@ import OrientationToggle from '../components/OrientationToggle.astro';
 import SizeList from '../components/SizeList.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+
+// SEO metadata
+const title = 'Screenshot Resizer - Free iOS App Store Screenshot Tool';
+const description = 'Resize screenshots for every iPhone and iPad size required by the App Store. Free, fast, browser-based tool that processes images locally for complete privacy. Supports 20+ screen sizes.';
+const keywords = 'screenshot resizer, iOS screenshots, App Store screenshots, iPhone sizes, iPad sizes, screenshot tool, app store submission, free tool, browser-based';
+
+// JSON-LD Structured Data for SoftwareApplication
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Screenshot Resizer",
+  "description": description,
+  "url": "https://tools.dennislysenko.tech/screenshot-resizer",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any (Browser-based)",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "Resize screenshots for 20+ iPhone and iPad screen sizes",
+    "Batch download all resized screenshots as ZIP",
+    "100% browser-based - no uploads required",
+    "Privacy-focused - images never leave your device",
+    "Support for portrait and landscape orientations",
+    "Quick presets for common device sizes"
+  ],
+  "screenshot": "https://tools.dennislysenko.tech/og-image.jpg",
+  "author": {
+    "@type": "Person",
+    "name": "Dennis Lysenko",
+    "url": "https://dennislysenko.tech"
+  },
+  "browserRequirements": "Requires JavaScript. Works with modern browsers (Chrome, Firefox, Safari, Edge).",
+  "softwareVersion": "1.0.0",
+  "datePublished": "2025-01-15"
+};
 ---
 
-<Layout>
-  <main class="container mx-auto px-6 py-12 max-w-6xl">
-    <!-- Hero Section -->
-    <div class="text-center mb-20">
-      <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
-        <h1 class="text-hero">
-          Stop fighting App Store screenshot requirements
-        </h1>
-        <span class="beta-badge">BETA</span>
-      </div>
-      <p class="text-subhero text-secondary max-w-2xl mx-auto">
-        Resize your screenshots for every iPhone and iPad size in seconds. Free, fast, and runs entirely in your browser.
-      </p>
-    </div>
-
-    <!-- Main Content Grid -->
-    <div class="grid md:grid-cols-2 gap-8 mb-12">
-      <!-- Left Column - Upload & Preview -->
-      <div>
-        <FileUpload />
-        <ImagePreview />
-      </div>
-
-      <!-- Right Column - Controls -->
-      <div>
-        <div class="bg-white rounded-2xl p-8 md:p-10 shadow-md">
-          <h2 class="text-section-title mb-8">Configuration</h2>
-
-          <div class="config-section">
-            <DeviceToggle />
+<Layout
+  title={title}
+  description={description}
+  keywords={keywords}
+  canonicalUrl="/screenshot-resizer"
+  jsonLd={jsonLd}
+>
+  <main class="app-container">
+    <div class="app-wrapper">
+      <!-- Hero Section -->
+      <header class="hero-section">
+        <div class="hero-content">
+          <div class="title-group">
+            <h1 class="hero-title">Stop fighting App Store screenshot requirements</h1>
+            <span class="beta-badge">BETA</span>
           </div>
-
-          <div class="config-section">
-            <OrientationToggle />
-          </div>
-
-          <div class="config-section">
-            <SizeList />
-          </div>
-
-          <!-- Error Message -->
-          <div id="error-container" style="display: none;">
-            <div class="error-message">
-              <span id="error-text"></span>
-            </div>
-          </div>
-
-          <!-- Download Button -->
-          <button
-            id="download-button"
-            class="btn-primary w-full mt-6"
-            disabled
-          >
-            <span id="button-text">Download Screenshots</span>
-            <span id="button-spinner" class="spinner" style="display: none;"></span>
-          </button>
-
-          <p id="selected-count" class="text-center text-sm text-secondary mt-3">
-            Select sizes to download
+          <p class="hero-description">
+            Resize your screenshots for every iPhone and iPad size in seconds. Free, fast, and runs entirely in your browser.
           </p>
         </div>
+      </header>
+
+      <!-- Main Content -->
+      <div class="content-grid">
+        <!-- Upload Section -->
+        <section class="upload-section">
+          <FileUpload />
+          <ImagePreview />
+        </section>
+
+        <!-- Configuration Sidebar -->
+        <aside class="config-sidebar">
+          <div class="config-card">
+            <h2 class="config-title">Configuration</h2>
+
+            <div class="config-group">
+              <DeviceToggle />
+            </div>
+
+            <div class="config-group">
+              <OrientationToggle />
+            </div>
+
+            <div class="config-group">
+              <SizeList />
+            </div>
+
+            <!-- Error Message -->
+            <div id="error-container" style="display: none;">
+              <div class="error-message">
+                <span id="error-text"></span>
+              </div>
+            </div>
+
+            <!-- Download Section -->
+            <div class="download-section">
+              <button
+                id="download-button"
+                class="btn-primary"
+                disabled
+              >
+                <span id="button-text">Download Screenshots</span>
+                <span id="button-spinner" class="spinner" style="display: none;"></span>
+              </button>
+
+              <p id="selected-count" class="selected-count">
+                Select sizes to download
+              </p>
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
 
@@ -436,18 +484,164 @@ import '../styles/global.css';
 </script>
 
 <style>
-  .container {
+  /* Professional Layout System */
+  .app-container {
     min-height: 100vh;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
   }
 
-  main {
-    max-width: 1200px;
+  .app-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
   }
 
-  h1 {
-    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-blue) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  /* Hero Section - Left Aligned, Professional */
+  .hero-section {
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+    max-width: 900px;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .title-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+  }
+
+  .hero-description {
+    font-size: clamp(1.125rem, 2vw, 1.375rem);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    max-width: 65ch;
+  }
+
+  /* Content Grid - Responsive, Professional Spacing */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (min-width: 1024px) {
+    .content-grid {
+      grid-template-columns: 1.2fr 1fr;
+      gap: 3rem;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .content-grid {
+      gap: 4rem;
+    }
+  }
+
+  /* Upload Section */
+  .upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* Config Sidebar */
+  .config-sidebar {
+    position: sticky;
+    top: 2rem;
+  }
+
+  .config-card {
+    background: white;
+    border-radius: 16px;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05),
+                0 4px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .config-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 2rem;
+    letter-spacing: -0.01em;
+  }
+
+  .config-group {
+    padding-bottom: 1.75rem;
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid var(--color-gray-2);
+  }
+
+  .config-group:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  /* Download Section */
+  .download-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-gray-2);
+  }
+
+  .download-section .btn-primary {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .selected-count {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+  }
+
+  /* Mobile Optimizations */
+  @media (max-width: 768px) {
+    .title-group {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .hero-title {
+      max-width: 100%;
+    }
+
+    .config-sidebar {
+      position: static;
+    }
+  }
+
+  /* Tablet Adjustments */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .content-grid {
+      gap: 2.5rem;
+    }
+  }
+
+  /* Large Screen Optimizations */
+  @media (min-width: 1600px) {
+    .app-wrapper {
+      max-width: 1500px;
+    }
+
+    .hero-section {
+      margin-bottom: 6rem;
+    }
   }
 </style>

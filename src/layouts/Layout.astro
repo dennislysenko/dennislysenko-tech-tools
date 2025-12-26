@@ -2,38 +2,73 @@
 interface Props {
   title?: string;
   description?: string;
+  keywords?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  ogType?: string;
+  jsonLd?: object;
 }
 
 const {
-  title = 'Screenshot Resizer - iOS App Store Tool',
-  description = 'Resize screenshots for every iPhone and iPad size required by the App Store. Free, fast, and easy to use.'
+  title = 'Developer Tools by Dennis Lysenko',
+  description = 'Free, privacy-focused developer tools for iOS, web, and mobile development.',
+  keywords = 'developer tools, iOS tools, screenshot resizer, web tools, privacy-focused',
+  canonicalUrl = Astro.url.pathname,
+  ogImage = '/og-image.jpg',
+  ogType = 'website',
+  jsonLd
 } = Astro.props;
+
+const fullCanonicalUrl = new URL(canonicalUrl, Astro.site).href;
+const fullOgImage = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro.site).href;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Open Graph / Social Media -->
-    <meta property="og:type" content="website" />
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content="Dennis Lysenko" />
+    <meta name="copyright" content="© 2025 Dennis Lysenko" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={fullCanonicalUrl} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={fullCanonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:site_name" content="Screenshot Resizer" />
+    <meta property="og:image" content={fullOgImage} />
+    <meta property="og:image:alt" content={`${title} - Preview`} />
+    <meta property="og:site_name" content="Developer Tools by Dennis Lysenko" />
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={fullCanonicalUrl} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={fullOgImage} />
 
     <!-- Apple-specific -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Dev Tools" />
 
-    <title>{title}</title>
+    <!-- JSON-LD Structured Data -->
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
   </head>
   <body>
     <slot />

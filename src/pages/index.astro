@@ -1,18 +1,142 @@
 ---
-// Root redirect to screenshot resizer
+import Layout from '../layouts/Layout.astro';
+
+const tools = [
+  {
+    name: 'Screenshot Resizer',
+    description: 'Resize screenshots for every iPhone and iPad size required by the App Store',
+    url: '/screenshot-resizer',
+    icon: '📱'
+  }
+  // Future tools will be added here
+];
 ---
 
-<script is:inline>
-  window.location.href = '/screenshot-resizer';
-</script>
+<Layout
+  title="Developer Tools by Dennis Lysenko"
+  description="Free, privacy-focused developer tools for iOS, web, and mobile development. Browser-based tools that respect your privacy."
+>
+  <main class="container">
+    <div class="hero">
+      <h1>Developer Tools</h1>
+      <p class="subtitle">Free, privacy-focused tools for developers</p>
+    </div>
 
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0; url=/screenshot-resizer" />
-    <title>Redirecting...</title>
-  </head>
-  <body>
-    <p>Redirecting to <a href="/screenshot-resizer">Screenshot Resizer</a>...</p>
-  </body>
-</html>
+    <div class="tools-grid">
+      {tools.map(tool => (
+        <a href={tool.url} class="tool-card">
+          <div class="tool-icon">{tool.icon}</div>
+          <h2>{tool.name}</h2>
+          <p>{tool.description}</p>
+        </a>
+      ))}
+    </div>
+
+    <footer>
+      <p>
+        Made by <a href="https://dennislysenko.tech" target="_blank" rel="noopener noreferrer">Dennis Lysenko</a>
+      </p>
+    </footer>
+  </main>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+  }
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+    color: #666;
+    margin-top: 0.5rem;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .tool-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 2rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  .tool-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-color: #667eea;
+  }
+
+  .tool-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .tool-card h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #1a202c;
+  }
+
+  .tool-card p {
+    color: #4a5568;
+    line-height: 1.6;
+  }
+
+  footer {
+    margin-top: auto;
+    padding: 2rem 0;
+    text-align: center;
+    color: #666;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  footer a {
+    color: #667eea;
+    text-decoration: none;
+  }
+
+  footer a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    h1 {
+      font-size: 2rem;
+    }
+
+    .tools-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

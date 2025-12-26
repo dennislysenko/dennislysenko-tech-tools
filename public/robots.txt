@@ -1,0 +1,15 @@
+# robots.txt for tools.dennislysenko.tech
+# Allow all search engines to crawl all content
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://tools.dennislysenko.tech/sitemap-index.xml
+
+# Block common bot paths (if any in the future)
+# Disallow: /api/
+# Disallow: /_astro/
+
+# Crawl delay (optional - uncomment if needed)
+# Crawl-delay: 1
