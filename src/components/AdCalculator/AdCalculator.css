@@ -439,31 +439,76 @@
   margin-bottom: 8px;
 }
 
-.roas-levers {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.roas-levers-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
 }
 
-.roas-lever {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.roas-levers-table th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-gray-4);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0 8px 6px 0;
+  border-bottom: 1px solid var(--color-gray-2);
+}
+
+.roas-levers-table td {
+  padding: 6px 8px 6px 0;
+  vertical-align: top;
+  border-bottom: 1px solid var(--color-gray-1);
+}
+
+.roas-levers-table tr:last-child td {
+  border-bottom: none;
 }
 
 .roas-lever-title {
-  font-size: 12px;
   font-weight: 600;
   color: var(--color-text);
+  white-space: nowrap;
 }
 
-.roas-lever-desc {
-  font-size: 12px;
-  line-height: 1.4;
+.roas-lever-how {
   color: var(--color-text-secondary);
+}
+
+.roas-lever-effect {
+  color: var(--color-text-secondary);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .roas-levers-table,
+  .roas-levers-table thead,
+  .roas-levers-table tbody,
+  .roas-levers-table tr,
+  .roas-levers-table th,
+  .roas-levers-table td {
+    display: block;
+  }
+
+  .roas-levers-table thead {
+    display: none;
+  }
+
+  .roas-levers-table tr {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-gray-1);
+  }
+
+  .roas-levers-table tr:last-child {
+    border-bottom: none;
+  }
+
+  .roas-levers-table td {
+    padding: 1px 0;
+    border-bottom: none;
+  }
 }
 
 .roas-empty {

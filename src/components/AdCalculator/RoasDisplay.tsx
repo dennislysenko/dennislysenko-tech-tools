@@ -51,7 +51,8 @@ function formatRoas(roas: number): string {
 
 interface Lever {
   title: string;
-  description: string;
+  how: string;
+  effect: string;
 }
 
 function getBreakevenLevers(props: Props): Lever[] {
@@ -59,30 +60,35 @@ function getBreakevenLevers(props: Props): Lever[] {
 
   if (props.model === 'cpm') {
     levers.push({
-      title: 'Improve conversion rate',
-      description: 'Better ad creative and audience targeting — reduces CPA linearly.',
+      title: 'Conversion rate',
+      how: 'Better creative & targeting',
+      effect: 'Reduces CPA',
     });
   } else {
     levers.push({
-      title: 'Improve conversion rate',
-      description: 'Optimize App Store screenshots, preview video, and description — reduces CPA linearly.',
+      title: 'Conversion rate',
+      how: 'App Store listing optimization',
+      effect: 'Reduces CPA',
     });
   }
 
   levers.push({
-    title: 'Increase install-to-paying rate',
-    description: 'Improve onboarding, paywall placement, and trial experience — increases revenue per install linearly.',
+    title: 'Install-to-paying',
+    how: 'Onboarding, paywall, trial UX',
+    effect: 'More revenue per install',
   });
 
   levers.push({
-    title: 'Increase subscriber LTV',
-    description: 'Retention offers, annual plans, and upsells — increases revenue per install linearly.',
+    title: 'Subscriber LTV',
+    how: 'Retention, annual plans, upsells',
+    effect: 'More revenue per install',
   });
 
   if (props.kFactor === 0) {
     levers.push({
-      title: 'Factor in organic uplift',
-      description: 'Paid installs often drive organic growth — set a K-factor above to model this.',
+      title: 'Organic uplift',
+      how: 'Set K-factor above',
+      effect: 'Free installs from paid',
     });
   }
 
@@ -211,14 +217,24 @@ export function RoasDisplay(props: Props) {
             {displayRoas < 0 && spend > 0 && (
               <div className="roas-breakeven-hint">
                 <div className="roas-breakeven-title">To break even, try:</div>
-                <ul className="roas-levers">
-                  {getBreakevenLevers(props).map((lever) => (
-                    <li key={lever.title} className="roas-lever">
-                      <strong className="roas-lever-title">{lever.title}</strong>
-                      <span className="roas-lever-desc">{lever.description}</span>
-                    </li>
-                  ))}
-                </ul>
+                <table className="roas-levers-table">
+                  <thead>
+                    <tr>
+                      <th>Lever</th>
+                      <th>How</th>
+                      <th>Effect</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {getBreakevenLevers(props).map((lever) => (
+                      <tr key={lever.title}>
+                        <td className="roas-lever-title">{lever.title}</td>
+                        <td className="roas-lever-how">{lever.how}</td>
+                        <td className="roas-lever-effect">{lever.effect}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
           </div>
