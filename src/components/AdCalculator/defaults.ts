@@ -6,7 +6,7 @@ export const CPM_DEFAULTS = {
 } as const;
 
 export const CPT_DEFAULTS = {
-  cpt: 2.0,
+  cpt: 0.80,
 } as const;
 
 export const COMMON_DEFAULTS = {
