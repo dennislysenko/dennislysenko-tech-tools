@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useState } from 'react';
+import { useReducer, useEffect, useState, useCallback } from 'react';
 import type { CalculatorState, CalculatorAction, NumericField, MonetizationMode } from './types';
 import { getInitialState, recalculate, isDerivedField } from './defaults';
 
@@ -6,33 +6,59 @@ const STORAGE_KEY = 'ad-calculator-state';
 
 type InternalAction = CalculatorAction | { type: 'RESTORE'; state: CalculatorState };
 
+function applyBackwardsCompat(saved: Record<string, unknown>): void {
+  if (!saved.monetizationMode) {
+    saved.monetizationMode = 'trials';
+  }
+  if (typeof saved.trialConversionRate !== 'number') {
+    saved.trialConversionRate = (saved.trialStartRate as number) > 0
+      ? (saved.installToPayingRate as number) / (saved.trialStartRate as number)
+      : 0;
+  }
+  if (typeof saved.kFactor !== 'number') {
+    saved.kFactor = 0;
+  }
+  if (typeof saved.adjustedRoas !== 'number') {
+    saved.adjustedRoas = 0;
+  }
+}
+
+function loadStateFromUrl(): CalculatorState | null {
+  try {
+    const hash = window.location.hash;
+    if (!hash.startsWith('#s=')) return null;
+    const json = atob(hash.slice(3));
+    const saved = JSON.parse(json);
+    if (saved && typeof saved.model === 'string' && typeof saved.cpt === 'number') {
+      applyBackwardsCompat(saved);
+      // Clear the hash so it doesn't stick around on subsequent edits
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      return recalculate(saved as CalculatorState);
+    }
+  } catch {
+    // Ignore bad URL data
+  }
+  return null;
+}
+
 function loadSavedState(): CalculatorState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const saved = JSON.parse(raw);
     if (saved && typeof saved.model === 'string' && typeof saved.cpt === 'number') {
-      // Backwards compat: add monetizationMode and trialConversionRate if missing
-      if (!saved.monetizationMode) {
-        saved.monetizationMode = 'trials';
-      }
-      if (typeof saved.trialConversionRate !== 'number') {
-        saved.trialConversionRate = saved.trialStartRate > 0
-          ? saved.installToPayingRate / saved.trialStartRate
-          : 0;
-      }
-      if (typeof saved.kFactor !== 'number') {
-        saved.kFactor = 0;
-      }
-      if (typeof saved.adjustedRoas !== 'number') {
-        saved.adjustedRoas = 0;
-      }
+      applyBackwardsCompat(saved);
       return saved as CalculatorState;
     }
   } catch {
     // Ignore corrupt data
   }
   return null;
+}
+
+function encodeStateToHash(state: CalculatorState): string {
+  const { roas, adjustedRoas, ...rest } = state;
+  return '#s=' + btoa(JSON.stringify(rest));
 }
 
 function saveState(state: CalculatorState): void {
@@ -101,11 +127,16 @@ export function useCalculatorState() {
   const [state, dispatch] = useReducer(reducer, null, () => getInitialState('cpt'));
   const [hydrated, setHydrated] = useState(false);
 
-  // After hydration, restore saved state from localStorage
+  // After hydration, restore state: URL takes priority over localStorage
   useEffect(() => {
-    const saved = loadSavedState();
-    if (saved) {
-      dispatch({ type: 'RESTORE', state: saved });
+    const fromUrl = loadStateFromUrl();
+    if (fromUrl) {
+      dispatch({ type: 'RESTORE', state: fromUrl });
+    } else {
+      const saved = loadSavedState();
+      if (saved) {
+        dispatch({ type: 'RESTORE', state: saved });
+      }
     }
     setHydrated(true);
   }, []);
@@ -132,5 +163,11 @@ export function useCalculatorState() {
   const resetAll = () =>
     dispatch({ type: 'RESET_ALL' });
 
-  return { state, setModel, setMonetizationMode, setField, toggleLock, resetAll };
+  const copyShareLink = useCallback(async () => {
+    const url = window.location.origin + window.location.pathname + encodeStateToHash(state);
+    await navigator.clipboard.writeText(url);
+    return url;
+  }, [state]);
+
+  return { state, setModel, setMonetizationMode, setField, toggleLock, resetAll, copyShareLink };
 }

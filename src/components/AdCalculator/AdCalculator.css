@@ -15,6 +15,28 @@
   flex-wrap: wrap;
 }
 
+.calc-controls-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.calc-share-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--color-blue);
+  background: white;
+  color: var(--color-blue);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calc-share-btn:hover {
+  background: rgba(0, 122, 255, 0.06);
+}
+
 .calc-reset-btn {
   padding: 8px 16px;
   border-radius: 8px;

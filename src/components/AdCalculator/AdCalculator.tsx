@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useCalculatorState } from './useCalculatorState';
 import { ModelSelector } from './ModelSelector';
 import { CalculatorRow } from './CalculatorRow';
@@ -44,7 +45,14 @@ function getInstallToPayingDerivedFrom(mode: MonetizationMode): string | undefin
 }
 
 export default function AdCalculator() {
-  const { state, setModel, setMonetizationMode, setField, toggleLock, resetAll } = useCalculatorState();
+  const { state, setModel, setMonetizationMode, setField, toggleLock, resetAll, copyShareLink } = useCalculatorState();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = async () => {
+    await copyShareLink();
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const renderField = (f: FieldConfig) => {
     // cpmOnly visibility
@@ -85,9 +93,14 @@ export default function AdCalculator() {
     <div className="ad-calculator">
       <div className="calc-controls">
         <ModelSelector model={state.model} onChange={setModel} />
-        <button type="button" className="calc-reset-btn" onClick={resetAll}>
-          Reset All
-        </button>
+        <div className="calc-controls-right">
+          <button type="button" className="calc-share-btn" onClick={handleCopyLink}>
+            {copied ? 'Copied!' : 'Copy Link'}
+          </button>
+          <button type="button" className="calc-reset-btn" onClick={resetAll}>
+            Reset All
+          </button>
+        </div>
       </div>
 
       <div className="calc-layout">
