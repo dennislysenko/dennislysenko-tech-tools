@@ -7,6 +7,7 @@ interface Props {
   roas: number;
   adjustedRoas: number;
   cpa: number;
+  conversionRate: number;
   revenuePerInstall: number;
   kFactor: number;
   installToPayingRate: number;
@@ -45,6 +46,73 @@ function getRoasBg(roas: number): string {
 function formatRoas(roas: number): string {
   const sign = roas > 0 ? '+' : '';
   return `${sign}${roas.toFixed(2)}x`;
+}
+
+interface Lever {
+  label: string;
+  current: string;
+  target: string;
+}
+
+function getBreakevenLevers(props: Props): Lever[] {
+  const { cpa, conversionRate, revenuePerInstall, kFactor, installToPayingRate, revenuePerSubscriber } = props;
+  const k = 1 + kFactor;
+  const levers: Lever[] = [];
+
+  // 1. Improve conversion rate (lowers CPA)
+  // breakeven CPA = revenuePerInstall * k
+  // needed conversionRate = conversionRate * cpa / (revenuePerInstall * k)
+  if (revenuePerInstall > 0 && conversionRate > 0) {
+    const needed = conversionRate * cpa / (revenuePerInstall * k);
+    if (needed <= 1 && needed > conversionRate) {
+      levers.push({
+        label: 'Improve conversion rate',
+        current: `${(conversionRate * 100).toFixed(1)}%`,
+        target: `${(needed * 100).toFixed(1)}%`,
+      });
+    }
+  }
+
+  // 2. Increase install-to-paying rate
+  // needed = cpa / (revenuePerSubscriber * k)
+  if (revenuePerSubscriber > 0) {
+    const needed = cpa / (revenuePerSubscriber * k);
+    if (needed <= 1 && needed > installToPayingRate) {
+      levers.push({
+        label: 'Increase install-to-paying rate',
+        current: `${(installToPayingRate * 100).toFixed(1)}%`,
+        target: `${(needed * 100).toFixed(1)}%`,
+      });
+    }
+  }
+
+  // 3. Increase revenue per subscriber (LTV)
+  // needed = cpa / (installToPayingRate * k)
+  if (installToPayingRate > 0) {
+    const needed = cpa / (installToPayingRate * k);
+    if (needed > revenuePerSubscriber) {
+      levers.push({
+        label: 'Increase subscriber LTV',
+        current: `$${revenuePerSubscriber.toFixed(2)}`,
+        target: `$${needed.toFixed(2)}`,
+      });
+    }
+  }
+
+  // 4. Factor in organic uplift (only if kFactor is 0)
+  // needed k-factor: (cpa / revenuePerInstall) - 1
+  if (kFactor === 0 && revenuePerInstall > 0) {
+    const needed = (cpa / revenuePerInstall) - 1;
+    if (needed > 0 && needed <= 3) {
+      levers.push({
+        label: 'Factor in organic uplift',
+        current: '0.00',
+        target: `${needed.toFixed(2)}`,
+      });
+    }
+  }
+
+  return levers;
 }
 
 function getSpendEarn(
@@ -168,7 +236,17 @@ export function RoasDisplay(props: Props) {
 
             {displayRoas < 0 && spend > 0 && (
               <div className="roas-breakeven-hint">
-                You need at least <strong>${spend.toFixed(2)}</strong> revenue {perLabel} to break even
+                <div className="roas-breakeven-title">To break even, try:</div>
+                <ul className="roas-levers">
+                  {getBreakevenLevers(props).map((lever) => (
+                    <li key={lever.label} className="roas-lever">
+                      <span className="roas-lever-label">{lever.label}</span>
+                      <span className="roas-lever-values">
+                        {lever.current} <span className="roas-lever-arrow">&rarr;</span> <strong>{lever.target}</strong>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>

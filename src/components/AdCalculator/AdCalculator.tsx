@@ -148,6 +148,7 @@ export default function AdCalculator() {
             roas={state.roas}
             adjustedRoas={state.adjustedRoas}
             cpa={state.cpa}
+            conversionRate={state.conversionRate}
             revenuePerInstall={state.revenuePerInstall}
             kFactor={state.kFactor}
             installToPayingRate={state.installToPayingRate}
