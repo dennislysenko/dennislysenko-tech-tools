@@ -1,0 +1,183 @@
+import { useState } from 'react';
+import type { MonetizationMode } from './types';
+
+type ViewMode = 'install' | 'trial' | 'subscriber';
+
+interface Props {
+  roas: number;
+  adjustedRoas: number;
+  cpa: number;
+  revenuePerInstall: number;
+  kFactor: number;
+  installToPayingRate: number;
+  costPerTrialStart: number;
+  costPerSubscriber: number;
+  revenuePerSubscriber: number;
+  trialConversionRate: number;
+  monetizationMode: MonetizationMode;
+}
+
+// ROAS uses 0x = breakeven. Negative = loss, positive = profit.
+function getRoasColor(roas: number): string {
+  if (roas < -0.2) return '#FF3B30';
+  if (roas < 0) return '#FF9500';
+  if (roas < 0.2) return '#FFCC00';
+  return '#34C759';
+}
+
+function getRoasLabel(roas: number): string {
+  if (roas < -0.5) return 'Significant loss';
+  if (roas < -0.2) return 'Losing money';
+  if (roas < 0) return 'Almost breakeven';
+  if (roas < 0.0001) return 'Breakeven';
+  if (roas < 0.2) return 'Slightly profitable';
+  if (roas < 1.0) return 'Profitable';
+  return 'Highly profitable';
+}
+
+function getRoasBg(roas: number): string {
+  if (roas < -0.2) return 'rgba(255, 59, 48, 0.06)';
+  if (roas < 0) return 'rgba(255, 149, 0, 0.06)';
+  if (roas < 0.2) return 'rgba(255, 204, 0, 0.06)';
+  return 'rgba(52, 199, 89, 0.06)';
+}
+
+function formatRoas(roas: number): string {
+  const sign = roas > 0 ? '+' : '';
+  return `${sign}${roas.toFixed(2)}x`;
+}
+
+function getSpendEarn(
+  view: ViewMode,
+  props: Props,
+): { spend: number; earn: number; perLabel: string } {
+  const k = 1 + props.kFactor;
+  switch (view) {
+    case 'trial':
+      return {
+        spend: props.costPerTrialStart,
+        earn: props.revenuePerSubscriber * props.trialConversionRate * k,
+        perLabel: 'per trial',
+      };
+    case 'subscriber':
+      return {
+        spend: props.costPerSubscriber,
+        earn: props.revenuePerSubscriber * k,
+        perLabel: 'per subscriber',
+      };
+    default:
+      return {
+        spend: props.cpa,
+        earn: props.revenuePerInstall * k,
+        perLabel: 'per install',
+      };
+  }
+}
+
+export function RoasDisplay(props: Props) {
+  const { roas, adjustedRoas, cpa, monetizationMode } = props;
+  const [viewMode, setViewMode] = useState<ViewMode>('install');
+
+  const displayRoas = adjustedRoas > roas ? adjustedRoas : roas;
+  const hasOrganic = adjustedRoas > roas;
+  const hasData = cpa > 0;
+  const showTrials = monetizationMode === 'trials';
+
+  const color = getRoasColor(displayRoas);
+  const label = getRoasLabel(displayRoas);
+  const bg = getRoasBg(displayRoas);
+  const percentage = displayRoas * 100;
+
+  // Breakeven revenue per subscriber needed
+  const breakevenRevPerSub =
+    props.installToPayingRate > 0 ? cpa / props.installToPayingRate : 0;
+
+  // Bar: map ROAS to 0-100% where -1x=0%, 0x=50% (breakeven), +1x+=100%
+  const barPercent = Math.max(0, Math.min(100, ((displayRoas + 1) / 2) * 100));
+
+  // If trials mode is off and user had "trial" selected, fall back to install
+  const effectiveView = (!showTrials && viewMode === 'trial') ? 'install' : viewMode;
+  const { spend, earn, perLabel } = getSpendEarn(effectiveView, props);
+
+  return (
+    <div className="roas-card" style={{ background: hasData ? bg : undefined, borderColor: hasData ? color : undefined }}>
+      <div className="roas-header">
+        <span className="roas-title">Return on Ad Spend</span>
+      </div>
+
+      {hasData ? (
+        <>
+          <div className="roas-primary">
+            <div className="roas-value" style={{ color }}>
+              {formatRoas(displayRoas)}
+            </div>
+            <div className="roas-percentage" style={{ color }}>
+              {percentage >= 0 ? '+' : ''}{percentage.toFixed(0)}% return
+            </div>
+            {hasOrganic && (
+              <div className="roas-organic-detail">
+                {formatRoas(roas)} direct · {formatRoas(adjustedRoas)} with organic
+              </div>
+            )}
+          </div>
+
+          <div className="roas-spend-earn">
+            <div className="roas-view-selector">
+              <button
+                className={`roas-view-btn ${effectiveView === 'install' ? 'active' : ''}`}
+                onClick={() => setViewMode('install')}
+              >Per Install</button>
+              {showTrials && (
+                <button
+                  className={`roas-view-btn ${effectiveView === 'trial' ? 'active' : ''}`}
+                  onClick={() => setViewMode('trial')}
+                >Per Trial</button>
+              )}
+              <button
+                className={`roas-view-btn ${effectiveView === 'subscriber' ? 'active' : ''}`}
+                onClick={() => setViewMode('subscriber')}
+              >Per Subscriber</button>
+            </div>
+            <div className="roas-spend-row">
+              <span className="roas-spend-label">You spend</span>
+              <span className="roas-spend-value roas-spend-negative">${spend.toFixed(2)}</span>
+              <span className="roas-spend-per">{perLabel}</span>
+            </div>
+            <div className="roas-spend-row">
+              <span className="roas-spend-label">You earn</span>
+              <span className="roas-spend-value roas-spend-positive">${earn.toFixed(2)}</span>
+              <span className="roas-spend-per">{perLabel}</span>
+            </div>
+          </div>
+
+          <div className="roas-details">
+            <div className="roas-bar-container">
+              <div className="roas-bar-track">
+                <div
+                  className="roas-bar-fill"
+                  style={{ width: `${barPercent}%`, background: color }}
+                />
+                <div className="roas-bar-breakeven" />
+              </div>
+              <div className="roas-bar-labels">
+                <span>-1x</span>
+                <span>0x breakeven</span>
+                <span>+1x+</span>
+              </div>
+            </div>
+
+            <div className="roas-label">{label}</div>
+
+            {displayRoas < 0 && breakevenRevPerSub > 0 && (
+              <div className="roas-breakeven-hint">
+                You need <strong>${breakevenRevPerSub.toFixed(2)}</strong> revenue per subscriber to break even
+              </div>
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="roas-empty">Enter your metrics above</div>
+      )}
+    </div>
+  );
+}

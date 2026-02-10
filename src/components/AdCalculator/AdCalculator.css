@@ -1,0 +1,584 @@
+/* Ad Calculator Styles */
+
+.ad-calculator {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Controls row: model selector + reset */
+.calc-controls {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.calc-reset-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--color-gray-3);
+  background: white;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calc-reset-btn:hover {
+  border-color: var(--color-gray-4);
+  color: var(--color-text);
+  background: var(--color-gray-1);
+}
+
+/* Two-column layout: inputs + ROAS sidebar */
+.calc-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .calc-layout {
+    grid-template-columns: 1fr 280px;
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .calc-layout {
+    grid-template-columns: 1.2fr 1fr;
+    gap: 3rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .calc-layout {
+    gap: 4rem;
+  }
+}
+
+.calc-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Sticky sidebar on desktop */
+.calc-sidebar {
+  position: sticky;
+  top: 2rem;
+}
+
+/* Sections */
+.calc-section {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.calc-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-gray-2);
+}
+
+/* Individual rows */
+.calc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  gap: 12px;
+  border-bottom: 1px solid var(--color-gray-1);
+}
+
+.calc-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.calc-row:first-of-type {
+  padding-top: 0;
+}
+
+.calc-row--derived {
+  opacity: 0.85;
+}
+
+/* Row label side */
+.calc-row-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.calc-row-label-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.calc-row-label-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.calc-row-description {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.calc-row-derived-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-gray-4);
+  background: var(--color-gray-1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* Input side */
+.calc-row-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.calc-row-unit-prefix,
+.calc-row-unit-suffix {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  user-select: none;
+}
+
+.calc-input {
+  width: 100px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--color-gray-2);
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--color-text);
+  background: white;
+  text-align: right;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.calc-input:focus {
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
+}
+
+.calc-input:hover:not(:focus) {
+  border-color: var(--color-gray-3);
+}
+
+/* Lock toggle button */
+.calc-lock-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  color: var(--color-gray-3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  opacity: 0.4;
+}
+
+.calc-lock-btn:hover {
+  opacity: 1;
+  color: var(--color-gray-4);
+  background: var(--color-gray-1);
+}
+
+.calc-lock-btn--locked {
+  opacity: 1;
+  color: var(--color-blue);
+  background: rgba(0, 122, 255, 0.08);
+}
+
+.calc-lock-btn--locked:hover {
+  color: var(--color-blue);
+  background: rgba(0, 122, 255, 0.14);
+}
+
+/* ROAS Display */
+.roas-card {
+  background: white;
+  border: 2px solid;
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.roas-header {
+  margin-bottom: 8px;
+}
+
+.roas-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+}
+
+.roas-value {
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.roas-percentage {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.roas-organic-detail {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+}
+
+/* Spend / Earn big numbers */
+.roas-spend-earn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 10px;
+}
+
+.roas-view-selector {
+  display: flex;
+  gap: 0;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+  padding: 2px;
+  margin-bottom: 12px;
+}
+
+.roas-view-btn {
+  flex: 1;
+  padding: 5px 8px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.roas-view-btn:hover {
+  color: var(--color-text);
+}
+
+.roas-view-btn.active {
+  background: white;
+  color: var(--color-text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.roas-spend-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.roas-spend-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  width: 70px;
+  flex-shrink: 0;
+}
+
+.roas-spend-value {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.roas-spend-negative {
+  color: #FF3B30;
+}
+
+.roas-spend-positive {
+  color: #34C759;
+}
+
+.roas-spend-per {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+/* Bar visualization */
+.roas-bar-container {
+  margin: 0 auto 16px;
+  max-width: 320px;
+}
+
+.roas-bar-track {
+  position: relative;
+  height: 8px;
+  background: var(--color-gray-2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.roas-bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+.roas-bar-breakeven {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  width: 2px;
+  height: 12px;
+  background: var(--color-text);
+  border-radius: 1px;
+  opacity: 0.3;
+}
+
+.roas-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--color-gray-4);
+  font-weight: 500;
+}
+
+.roas-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.roas-breakeven-hint {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.roas-empty {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  padding: 16px 0;
+}
+
+/* ROAS inner wrappers (for mobile flex layout) */
+.roas-primary {
+  text-align: center;
+}
+
+.roas-details {
+  text-align: center;
+}
+
+/* Model selector spacing */
+.model-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Mobile/tablet: ROAS as fixed bottom bar */
+@media (max-width: 899px) {
+  .calc-sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    z-index: 50;
+    padding: 0 12px 12px;
+    pointer-events: none;
+  }
+
+  .calc-sidebar .roas-card {
+    pointer-events: auto;
+  }
+
+  .roas-card {
+    border-radius: 14px;
+    padding: 10px 16px;
+    box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+    background: white !important;
+  }
+
+  .roas-header {
+    display: none;
+  }
+
+  .roas-primary {
+    text-align: left;
+    flex-shrink: 0;
+  }
+
+  .roas-value {
+    font-size: 26px;
+    margin-bottom: 0;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  .roas-percentage {
+    font-size: 11px;
+    margin-bottom: 0;
+  }
+
+  .roas-organic-detail {
+    font-size: 11px;
+    margin-bottom: 0;
+  }
+
+  .roas-details {
+    text-align: left;
+    min-width: 0;
+  }
+
+  .roas-spend-earn {
+    display: none;
+  }
+
+  .roas-bar-container {
+    display: none;
+  }
+
+  .roas-label {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .roas-breakeven-hint {
+    margin-top: 4px;
+    padding: 0;
+    background: none;
+    font-size: 11px;
+    border-radius: 0;
+    line-height: 1.3;
+  }
+
+  .roas-empty {
+    font-size: 13px;
+    padding: 2px 0;
+  }
+
+  /* Pad bottom of page so content isn't hidden behind fixed bar */
+  .calc-inputs {
+    padding-bottom: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ad-calculator {
+    gap: 16px;
+  }
+
+  .calc-section {
+    padding: 16px;
+  }
+
+  .calc-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 14px 0;
+  }
+
+  .calc-row-input-wrap {
+    width: 100%;
+  }
+
+  .calc-input {
+    flex: 1;
+    width: auto;
+  }
+
+  .calc-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .calc-reset-btn {
+    align-self: flex-end;
+  }
+}
+
+/* Segmented controls inside calc sections: full-width with equal buttons */
+.calc-section .segmented-control {
+  display: flex;
+  width: 100%;
+}
+
+.calc-section .segmented-button {
+  flex: 1;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .segmented-control {
+    width: 100%;
+  }
+
+  .segmented-button {
+    flex: 1;
+    text-align: center;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
