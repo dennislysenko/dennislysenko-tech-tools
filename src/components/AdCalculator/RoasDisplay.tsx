@@ -54,6 +54,11 @@ interface Lever {
   target: string;
 }
 
+function formatRate(rate: number): string {
+  if (rate > 1) return `>${(100).toFixed(0)}%`;
+  return `${(rate * 100).toFixed(1)}%`;
+}
+
 function getBreakevenLevers(props: Props): Lever[] {
   const { cpa, conversionRate, revenuePerInstall, kFactor, installToPayingRate, revenuePerSubscriber } = props;
   const k = 1 + kFactor;
@@ -64,11 +69,11 @@ function getBreakevenLevers(props: Props): Lever[] {
   // needed conversionRate = conversionRate * cpa / (revenuePerInstall * k)
   if (revenuePerInstall > 0 && conversionRate > 0) {
     const needed = conversionRate * cpa / (revenuePerInstall * k);
-    if (needed <= 1 && needed > conversionRate) {
+    if (needed > conversionRate) {
       levers.push({
         label: 'Improve conversion rate',
-        current: `${(conversionRate * 100).toFixed(1)}%`,
-        target: `${(needed * 100).toFixed(1)}%`,
+        current: formatRate(conversionRate),
+        target: formatRate(needed),
       });
     }
   }
@@ -77,11 +82,11 @@ function getBreakevenLevers(props: Props): Lever[] {
   // needed = cpa / (revenuePerSubscriber * k)
   if (revenuePerSubscriber > 0) {
     const needed = cpa / (revenuePerSubscriber * k);
-    if (needed <= 1 && needed > installToPayingRate) {
+    if (needed > installToPayingRate) {
       levers.push({
         label: 'Increase install-to-paying rate',
-        current: `${(installToPayingRate * 100).toFixed(1)}%`,
-        target: `${(needed * 100).toFixed(1)}%`,
+        current: formatRate(installToPayingRate),
+        target: formatRate(needed),
       });
     }
   }
@@ -103,7 +108,7 @@ function getBreakevenLevers(props: Props): Lever[] {
   // needed k-factor: (cpa / revenuePerInstall) - 1
   if (kFactor === 0 && revenuePerInstall > 0) {
     const needed = (cpa / revenuePerInstall) - 1;
-    if (needed > 0 && needed <= 3) {
+    if (needed > 0) {
       levers.push({
         label: 'Factor in organic uplift',
         current: '0.00',
