@@ -1,12 +1,17 @@
 ---
 // Footer component with attribution
+interface Props {
+  message?: string;
+}
+
+const { message = 'This tool was AI-coded with Claude to solve a recurring problem I faced as an app owner: spending hours manually resizing screenshots for App Store submissions. Now it takes seconds.' } = Astro.props;
 ---
 
 <footer class="footer">
   <div class="footer-content">
     <div class="footer-message">
       <p class="footer-text">
-        This tool was AI-coded with Claude to solve a recurring problem I faced as an app owner: spending hours manually resizing screenshots for App Store submissions. Now it takes seconds.
+        {message}
       </p>
     </div>
     <div class="footer-attribution">

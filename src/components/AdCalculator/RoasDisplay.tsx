@@ -26,9 +26,9 @@ function getRoasColor(roas: number): string {
 }
 
 function getRoasLabel(roas: number): string {
-  if (roas < -0.5) return 'Significant loss';
-  if (roas < -0.2) return 'Losing money';
-  if (roas < 0) return 'Almost breakeven';
+  if (roas < -0.5) return 'Below breakeven';
+  if (roas < -0.2) return 'Below breakeven';
+  if (roas < 0) return 'Near breakeven';
   if (roas < 0.0001) return 'Breakeven';
   if (roas < 0.2) return 'Slightly profitable';
   if (roas < 1.0) return 'Profitable';
@@ -88,9 +88,7 @@ export function RoasDisplay(props: Props) {
   const bg = getRoasBg(displayRoas);
   const percentage = displayRoas * 100;
 
-  // Breakeven revenue per subscriber needed
-  const breakevenRevPerSub =
-    props.installToPayingRate > 0 ? cpa / props.installToPayingRate : 0;
+  // Breakeven: how much you need to earn per unit to break even (= spend per unit)
 
   // Bar: map ROAS to 0-100% where -1x=0%, 0x=50% (breakeven), +1x+=100%
   const barPercent = Math.max(0, Math.min(100, ((displayRoas + 1) / 2) * 100));
@@ -168,9 +166,9 @@ export function RoasDisplay(props: Props) {
 
             <div className="roas-label">{label}</div>
 
-            {displayRoas < 0 && breakevenRevPerSub > 0 && (
+            {displayRoas < 0 && spend > 0 && (
               <div className="roas-breakeven-hint">
-                You need <strong>${breakevenRevPerSub.toFixed(2)}</strong> revenue per subscriber to break even
+                You need at least <strong>${spend.toFixed(2)}</strong> revenue {perLabel} to break even
               </div>
             )}
           </div>
