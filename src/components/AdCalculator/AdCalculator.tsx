@@ -147,6 +147,7 @@ export default function AdCalculator() {
           <RoasDisplay
             roas={state.roas}
             adjustedRoas={state.adjustedRoas}
+            model={state.model}
             cpa={state.cpa}
             conversionRate={state.conversionRate}
             revenuePerInstall={state.revenuePerInstall}

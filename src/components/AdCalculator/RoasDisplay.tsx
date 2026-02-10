@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import type { MonetizationMode } from './types';
+import type { AdModel, MonetizationMode } from './types';
 
 type ViewMode = 'install' | 'trial' | 'subscriber';
 
 interface Props {
   roas: number;
   adjustedRoas: number;
+  model: AdModel;
   cpa: number;
   conversionRate: number;
   revenuePerInstall: number;
@@ -49,72 +50,44 @@ function formatRoas(roas: number): string {
 }
 
 interface Lever {
-  label: string;
-  current: string;
-  target: string;
-}
-
-function formatRate(rate: number): string {
-  if (rate > 1) return `>${(100).toFixed(0)}%`;
-  return `${(rate * 100).toFixed(1)}%`;
+  title: string;
+  description: string;
 }
 
 function getBreakevenLevers(props: Props): Lever[] {
-  const { cpa, conversionRate, revenuePerInstall, kFactor, installToPayingRate, revenuePerSubscriber } = props;
-  const k = 1 + kFactor;
   const levers: Lever[] = [];
 
-  // 1. Improve conversion rate (lowers CPA)
-  // breakeven CPA = revenuePerInstall * k
-  // needed conversionRate = conversionRate * cpa / (revenuePerInstall * k)
-  if (revenuePerInstall > 0 && conversionRate > 0) {
-    const needed = conversionRate * cpa / (revenuePerInstall * k);
-    if (needed > conversionRate) {
-      levers.push({
-        label: 'Improve conversion rate',
-        current: formatRate(conversionRate),
-        target: formatRate(needed),
-      });
-    }
+  // 1. Improve conversion rate → lowers CPA
+  if (props.model === 'cpm') {
+    levers.push({
+      title: 'Improve conversion rate',
+      description: 'Better ad creative and targeting increases tap-through and install rates, reducing your cost per install.',
+    });
+  } else {
+    levers.push({
+      title: 'Improve conversion rate',
+      description: 'Optimize your App Store listing — screenshots, preview video, and description — to convert more taps into installs.',
+    });
   }
 
   // 2. Increase install-to-paying rate
-  // needed = cpa / (revenuePerSubscriber * k)
-  if (revenuePerSubscriber > 0) {
-    const needed = cpa / (revenuePerSubscriber * k);
-    if (needed > installToPayingRate) {
-      levers.push({
-        label: 'Increase install-to-paying rate',
-        current: formatRate(installToPayingRate),
-        target: formatRate(needed),
-      });
-    }
-  }
+  levers.push({
+    title: 'Increase install-to-paying rate',
+    description: 'Improve onboarding, paywall placement, and trial experience to convert more installs into paying subscribers.',
+  });
 
-  // 3. Increase revenue per subscriber (LTV)
-  // needed = cpa / (installToPayingRate * k)
-  if (installToPayingRate > 0) {
-    const needed = cpa / (installToPayingRate * k);
-    if (needed > revenuePerSubscriber) {
-      levers.push({
-        label: 'Increase subscriber LTV',
-        current: `$${revenuePerSubscriber.toFixed(2)}`,
-        target: `$${needed.toFixed(2)}`,
-      });
-    }
-  }
+  // 3. Increase subscriber LTV
+  levers.push({
+    title: 'Increase subscriber LTV',
+    description: 'Boost retention with engagement features, offer annual plans, and add upsells to increase lifetime revenue per subscriber.',
+  });
 
-  // 4. Factor in organic uplift (only if kFactor is 0)
-  // needed k-factor: (cpa / revenuePerInstall) - 1
-  if (kFactor === 0 && revenuePerInstall > 0) {
-    const needed = (cpa / revenuePerInstall) - 1;
-    if (needed > 0) {
-      levers.push({
-        label: 'Factor in organic uplift',
-        current: '0.00',
-        target: `${needed.toFixed(2)}`,
-      });
-    }
+  // 4. Factor in organic uplift (only when kFactor is 0)
+  if (props.kFactor === 0) {
+    levers.push({
+      title: 'Factor in organic uplift',
+      description: 'Paid installs often drive organic growth through word-of-mouth and chart rankings. Set a K-factor above to model this.',
+    });
   }
 
   return levers;
@@ -244,11 +217,9 @@ export function RoasDisplay(props: Props) {
                 <div className="roas-breakeven-title">To break even, try:</div>
                 <ul className="roas-levers">
                   {getBreakevenLevers(props).map((lever) => (
-                    <li key={lever.label} className="roas-lever">
-                      <span className="roas-lever-label">{lever.label}</span>
-                      <span className="roas-lever-values">
-                        {lever.current} <span className="roas-lever-arrow">&rarr;</span> <strong>{lever.target}</strong>
-                      </span>
+                    <li key={lever.title} className="roas-lever">
+                      <strong className="roas-lever-title">{lever.title}</strong>
+                      <span className="roas-lever-desc">{lever.description}</span>
                     </li>
                   ))}
                 </ul>
