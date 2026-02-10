@@ -57,36 +57,32 @@ interface Lever {
 function getBreakevenLevers(props: Props): Lever[] {
   const levers: Lever[] = [];
 
-  // 1. Improve conversion rate → lowers CPA
   if (props.model === 'cpm') {
     levers.push({
       title: 'Improve conversion rate',
-      description: 'Better ad creative and targeting increases tap-through and install rates, reducing your cost per install.',
+      description: 'Better ad creative and audience targeting — reduces CPA linearly.',
     });
   } else {
     levers.push({
       title: 'Improve conversion rate',
-      description: 'Optimize your App Store listing — screenshots, preview video, and description — to convert more taps into installs.',
+      description: 'Optimize App Store screenshots, preview video, and description — reduces CPA linearly.',
     });
   }
 
-  // 2. Increase install-to-paying rate
   levers.push({
     title: 'Increase install-to-paying rate',
-    description: 'Improve onboarding, paywall placement, and trial experience to convert more installs into paying subscribers.',
+    description: 'Improve onboarding, paywall placement, and trial experience — increases revenue per install linearly.',
   });
 
-  // 3. Increase subscriber LTV
   levers.push({
     title: 'Increase subscriber LTV',
-    description: 'Boost retention with engagement features, offer annual plans, and add upsells to increase lifetime revenue per subscriber.',
+    description: 'Retention offers, annual plans, and upsells — increases revenue per install linearly.',
   });
 
-  // 4. Factor in organic uplift (only when kFactor is 0)
   if (props.kFactor === 0) {
     levers.push({
       title: 'Factor in organic uplift',
-      description: 'Paid installs often drive organic growth through word-of-mouth and chart rankings. Set a K-factor above to model this.',
+      description: 'Paid installs often drive organic growth — set a K-factor above to model this.',
     });
   }
 
