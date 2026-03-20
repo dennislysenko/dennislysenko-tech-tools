@@ -1,21 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
-import AdCalculator from '../components/AdCalculator/AdCalculator';
+import ABTestPlanner from '../components/ABTestPlanner/ABTestPlanner';
 import '../styles/global.css';
 
-// SEO metadata
-const title = 'Ad Profitability Calculator - Free ROAS Tool for App Developers';
-const description = 'Calculate ad profitability for Meta and Apple Search Ads campaigns. See your ROAS instantly, simulate scenarios, and find your breakeven point. Free, browser-based tool.';
-const keywords = 'ROAS calculator, ad profitability, cost per install, CPI calculator, Meta ads, Apple Search Ads, CPM calculator, app marketing, user acquisition, mobile app ads';
+const title = 'A/B Test Planner - How Long Should Your Test Run?';
+const description = 'Plan your A/B test before running it. Enter your app metrics and see how many days you need for each variable and lift threshold. Free tool for app developers.';
+const keywords = 'A/B test planner, A/B test duration, sample size calculator, test planning, paywall testing, mobile app optimization, statistical power';
 
-// JSON-LD Structured Data
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Ad Profitability Calculator",
+  "name": "A/B Test Planner",
   "description": description,
-  "url": "https://tools.dennislysenko.tech/ad-profitability-calculator",
+  "url": "https://tools.dennislysenko.tech/ab-test-planner",
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "Any (Browser-based)",
   "offers": {
@@ -24,11 +22,11 @@ const jsonLd = {
     "priceCurrency": "USD"
   },
   "featureList": [
-    "Calculate ROAS for Meta (CPM) and Apple Search Ads (CPT) campaigns",
-    "Interactive scenario modeling - tweak any metric and see instant results",
-    "Pre-filled with industry average benchmarks",
-    "Full funnel visibility from impression to paying subscriber",
-    "Visual breakeven analysis with color-coded indicators",
+    "Calculate test duration for trial starts, purchases, and LTV",
+    "See timelines for 10%, 20%, and 50% detectable lifts",
+    "Support for 2-8 variants with Bonferroni correction",
+    "Warnings when test timelines are unrealistic",
+    "Helper text for finding metrics in RevenueCat and Adapty",
     "100% browser-based - no data leaves your device"
   ],
   "author": {
@@ -36,7 +34,7 @@ const jsonLd = {
     "name": "Dennis Lysenko",
     "url": "https://dennislysenko.tech"
   },
-  "browserRequirements": "Requires JavaScript. Works with modern browsers (Chrome, Firefox, Safari, Edge).",
+  "browserRequirements": "Requires JavaScript. Works with modern browsers.",
   "softwareVersion": "1.0.0",
   "datePublished": new Date().toISOString().split('T')[0]
 };
@@ -46,7 +44,7 @@ const jsonLd = {
   title={title}
   description={description}
   keywords={keywords}
-  canonicalUrl="/ad-profitability-calculator"
+  canonicalUrl="/ab-test-planner"
   jsonLd={jsonLd}
 >
   <main class="app-container">
@@ -54,24 +52,23 @@ const jsonLd = {
       <nav class="back-nav">
         <a href="/" class="back-link">&larr; All Tools</a>
       </nav>
-      <!-- Hero Section -->
       <header class="hero-section">
         <div class="hero-content">
           <div class="title-group">
-            <h1 class="hero-title">Are your ads profitable?</h1>
+            <h1 class="hero-title">How long should your A/B test run?</h1>
+            <span class="construction-badge">UNDER CONSTRUCTION</span>
           </div>
           <p class="hero-description">
-            Plug in your metrics, see your ROAS instantly. Simulate scenarios to find your path to profitability.
+            Enter your metrics. See exactly how many days you need for each variable and lift threshold.
           </p>
         </div>
       </header>
 
-      <!-- Calculator -->
       <section>
-        <AdCalculator client:load />
+        <ABTestPlanner client:load />
       </section>
 
-      <Footer message="This tool was AI-coded with Claude to help app developers quickly model ad profitability. Plug in your numbers, tweak scenarios, and share results with your team." />
+      <Footer message="Plan your A/B tests before running them. Know exactly how much traffic you need, and avoid drawing conclusions from insufficient data." />
     </div>
   </main>
 </Layout>
@@ -99,9 +96,9 @@ const jsonLd = {
 
   .title-group {
     display: flex;
+    flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
-    flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
   .hero-title {
@@ -129,10 +126,6 @@ const jsonLd = {
   @media (min-width: 1600px) {
     .app-wrapper {
       max-width: 1500px;
-    }
-
-    .hero-section {
-      margin-bottom: 6rem;
     }
   }
 </style>

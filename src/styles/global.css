@@ -33,6 +33,22 @@ body {
   min-height: 100vh;
 }
 
+/* Back Navigation */
+.back-nav {
+  margin-bottom: 1rem;
+}
+
+.back-link {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: var(--color-blue);
+}
+
 /* Typography */
 .text-hero {
   font-size: 72px;
@@ -308,6 +324,22 @@ input[type="checkbox"] {
   border-radius: 8px;
   text-transform: uppercase;
   box-shadow: 0 2px 8px rgba(255, 149, 0, 0.3);
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+/* UNDER CONSTRUCTION badge */
+.construction-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #636366 0%, #48484A 100%);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-radius: 8px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(99, 99, 102, 0.3);
   animation: pulse-subtle 3s ease-in-out infinite;
 }
 
