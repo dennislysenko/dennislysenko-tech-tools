@@ -1,0 +1,170 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/global.css';
+---
+
+<Layout title="File Input Test">
+  <main class="app-container">
+    <div class="app-wrapper">
+      <header class="hero-section">
+        <h1 class="hero-title">File Input Techniques</h1>
+        <p class="hero-description">Test which file picker methods work in your browser.</p>
+      </header>
+
+      <div id="results" style="margin-bottom: 2rem; padding: 16px; background: var(--color-gray-1); border-radius: 12px; font-family: monospace; font-size: 13px; white-space: pre-wrap; min-height: 60px;">Waiting for file selection...</div>
+
+      <!-- Technique 1: Visible native input -->
+      <section style="margin-bottom: 2rem; padding: 24px; background: white; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px;">
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">1. Visible native &lt;input type="file"&gt;</h2>
+        <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px;">Standard browser file input, always visible.</p>
+        <input type="file" accept=".csv,.json" id="test1" />
+      </section>
+
+      <!-- Technique 2: Styled label wrapping hidden input -->
+      <section style="margin-bottom: 2rem; padding: 24px; background: white; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px;">
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">2. Styled &lt;label&gt; wrapping hidden input</h2>
+        <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px;">Hidden input triggered by clicking a styled label.</p>
+        <label style="display: inline-block; padding: 10px 20px; background: var(--color-blue); color: white; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">
+          Choose File
+          <input type="file" accept=".csv,.json" id="test2" style="display: none;" />
+        </label>
+      </section>
+
+      <!-- Technique 3: Button calling input.click() synchronously -->
+      <section style="margin-bottom: 2rem; padding: 24px; background: white; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px;">
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">3. Button → input.click() (sync, not appended to DOM)</h2>
+        <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px;">Creates input in memory, calls .click() synchronously.</p>
+        <button id="test3-btn" style="padding: 10px 20px; background: var(--color-blue); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Choose File</button>
+      </section>
+
+      <!-- Technique 4: Button calling input.click() with DOM append -->
+      <section style="margin-bottom: 2rem; padding: 24px; background: white; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px;">
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">4. Button → input.click() (sync, appended to body)</h2>
+        <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px;">Creates input, appends to body, calls .click(), removes after.</p>
+        <button id="test4-btn" style="padding: 10px 20px; background: var(--color-blue); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Choose File</button>
+      </section>
+
+      <!-- Technique 5: Persistent hidden input + button click -->
+      <section style="margin-bottom: 2rem; padding: 24px; background: white; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px;">
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">5. Persistent hidden input in DOM + button triggers .click()</h2>
+        <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px;">Input is always in the DOM (hidden), button just clicks it.</p>
+        <input type="file" accept=".csv,.json" id="test5-input" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0);" />
+        <button id="test5-btn" style="padding: 10px 20px; background: var(--color-blue); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Choose File</button>
+      </section>
+
+      <!-- Technique 6: showOpenFilePicker API -->
+      <section style="margin-bottom: 2rem; padding: 24px; background: white; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px;">
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">6. window.showOpenFilePicker() (File System Access API)</h2>
+        <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px;">Modern API, Chrome/Edge only. May not work in Safari/Firefox.</p>
+        <button id="test6-btn" style="padding: 10px 20px; background: var(--color-blue); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">Choose File</button>
+      </section>
+
+      <!-- Technique 7: Drag and drop zone -->
+      <section style="margin-bottom: 2rem; padding: 24px; background: white; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px;">
+        <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">7. Drag &amp; Drop zone</h2>
+        <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px;">Drop a .csv or .json file onto the zone below.</p>
+        <div id="test7-drop" style="border: 3px dashed var(--color-gray-3); border-radius: 12px; padding: 40px; text-align: center; color: var(--color-text-secondary); font-size: 15px; transition: all 0.2s;">
+          Drop file here
+        </div>
+      </section>
+
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const log = (method: string, file: File) => {
+    const el = document.getElementById('results')!;
+    el.textContent = `✅ ${method}\nFile: ${file.name}\nSize: ${file.size} bytes\nType: ${file.type}`;
+  };
+
+  const logError = (method: string, err: string) => {
+    const el = document.getElementById('results')!;
+    el.textContent = `❌ ${method}\nError: ${err}`;
+  };
+
+  // 1. Visible native input
+  document.getElementById('test1')!.addEventListener('change', (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) log('1. Visible native input', file);
+  });
+
+  // 2. Label wrapping hidden input
+  document.getElementById('test2')!.addEventListener('change', (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) log('2. Styled label + hidden input', file);
+  });
+
+  // 3. Button → input.click() (not in DOM)
+  document.getElementById('test3-btn')!.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv,.json';
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (file) log('3. input.click() (not in DOM)', file);
+    };
+    input.click();
+  });
+
+  // 4. Button → input.click() (appended to body)
+  document.getElementById('test4-btn')!.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv,.json';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (file) log('4. input.click() (appended to body)', file);
+      document.body.removeChild(input);
+    };
+    input.click();
+  });
+
+  // 5. Persistent hidden input + button
+  document.getElementById('test5-btn')!.addEventListener('click', () => {
+    document.getElementById('test5-input')!.click();
+  });
+  document.getElementById('test5-input')!.addEventListener('change', (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) log('5. Persistent hidden input + button', file);
+  });
+
+  // 6. showOpenFilePicker
+  document.getElementById('test6-btn')!.addEventListener('click', async () => {
+    try {
+      if (!('showOpenFilePicker' in window)) {
+        logError('6. showOpenFilePicker', 'API not supported in this browser');
+        return;
+      }
+      const [handle] = await (window as any).showOpenFilePicker({
+        types: [{ description: 'Data files', accept: { 'text/csv': ['.csv'], 'application/json': ['.json'] } }],
+      });
+      const file = await handle.getFile();
+      log('6. showOpenFilePicker()', file);
+    } catch (err: any) {
+      if (err.name === 'AbortError') return; // user cancelled
+      logError('6. showOpenFilePicker', err.message);
+    }
+  });
+
+  // 7. Drag & drop
+  const dropZone = document.getElementById('test7-drop')!;
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = 'var(--color-blue)';
+    dropZone.style.background = 'rgba(0, 122, 255, 0.04)';
+  });
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.style.borderColor = 'var(--color-gray-3)';
+    dropZone.style.background = '';
+  });
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = 'var(--color-gray-3)';
+    dropZone.style.background = '';
+    const file = e.dataTransfer?.files[0];
+    if (file) log('7. Drag & Drop', file);
+  });
+</script>

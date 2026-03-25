@@ -1,0 +1,292 @@
+/* AB Test Planner — tool-specific styles only.
+   Shared styles (calc-section, calc-row, calc-controls, etc.)
+   come from AdCalculator.css. */
+
+/* Two-column layout */
+.planner-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .planner-layout {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .planner-layout {
+    gap: 3rem;
+  }
+}
+
+.planner-sidebar {
+  position: sticky;
+  top: 2rem;
+}
+
+.results-empty {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  padding: 16px 0;
+}
+
+@media (max-width: 899px) {
+  .planner-sidebar {
+    position: static;
+  }
+}
+
+/* Variant slider (shared between planner & evaluator) */
+.variant-slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.variant-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.variant-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1.5px solid var(--color-gray-3);
+  background: white;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.variant-btn:hover:not(:disabled) {
+  border-color: var(--color-blue);
+  color: var(--color-blue);
+  background: rgba(0, 122, 255, 0.06);
+}
+
+.variant-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.variant-range {
+  flex: 1;
+  max-width: 200px;
+  accent-color: var(--color-blue);
+  height: 4px;
+}
+
+.variant-count {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Timeline table */
+.timeline-intro {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.timeline-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -4px;
+  padding: 0 4px;
+}
+
+.timeline-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 4px;
+  min-width: 400px;
+}
+
+.timeline-table th {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-gray-4);
+  padding: 8px 12px 12px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.timeline-table th.tl-variable {
+  text-align: left;
+}
+
+.timeline-table td.tl-variable {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  padding: 14px 12px;
+  white-space: nowrap;
+}
+
+.tl-cell {
+  text-align: center;
+  padding: 14px 12px;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.tl-days {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.tl-samples {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+/* Warning callout */
+.planner-warning {
+  display: flex;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgba(255, 149, 0, 0.08);
+  border: 1px solid rgba(255, 149, 0, 0.2);
+  border-radius: 10px;
+  margin-top: 16px;
+}
+
+.warning-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.planner-warning strong {
+  font-size: 14px;
+  color: var(--color-text);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.planner-warning p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Timeline legend */
+.timeline-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-gray-1);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* Formula reference */
+.formula-ref {
+  margin-top: 8px;
+}
+
+.formula-ref-summary {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.formula-ref-summary:hover {
+  color: var(--color-blue);
+}
+
+.formula-ref-content {
+  padding: 12px 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.formula-ref-content p {
+  margin-bottom: 8px;
+}
+
+.formula-code {
+  font-family: 'SF Mono', SFMono-Regular, Menlo, Monaco, monospace;
+  background: var(--color-gray-1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--color-text);
+  overflow-x: auto;
+}
+
+/* Cross-link */
+.cross-link-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--color-gray-1);
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.cross-link {
+  color: var(--color-blue);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cross-link:hover {
+  text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .timeline-legend {
+    gap: 10px;
+  }
+
+  .cross-link-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+}
