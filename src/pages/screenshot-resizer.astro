@@ -330,6 +330,9 @@ const jsonLd = {
       const { width, height } = getDimensionsForOrientation(size, state.orientation);
       const isChecked = state.selectedSizes.has(size.id);
 
+      const altCount = size.alternates ? size.alternates.length : 0;
+      const altLabel = altCount > 0 ? ` (+${altCount} alt${altCount > 1 ? 's' : ''})` : '';
+
       const item = document.createElement('label');
       item.className = 'checkbox-item';
       item.innerHTML = `
@@ -338,7 +341,7 @@ const jsonLd = {
           <div class="checkbox-custom ${isChecked ? 'checked' : ''}"></div>
         </div>
         <div class="flex-1">
-          <div class="font-medium text-sm">${size.displayName} - ${width} × ${height}</div>
+          <div class="font-medium text-sm">${size.displayName} - ${width} × ${height}${altLabel}</div>
           ${size.description ? `<div class="text-tiny text-secondary mt-0.5">${size.description}</div>` : ''}
         </div>
       `;

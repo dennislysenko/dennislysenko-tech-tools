@@ -19,20 +19,35 @@ export async function createScreenshotZip(
 ): Promise<Blob> {
   const zip = new JSZip();
 
-  for (let i = 0; i < sizes.length; i++) {
-    const size = sizes[i];
+  // Build flat list of all images to generate (primary + alternates)
+  const jobs: { sizeId: string; displayName: string; width: number; height: number }[] = [];
+  for (const size of sizes) {
     const { width, height } = getDimensionsForOrientation(size, orientation);
+    jobs.push({ sizeId: size.id, displayName: size.displayName, width, height });
+
+    if (size.alternates) {
+      for (const alt of size.alternates) {
+        const altDims = orientation === 'landscape'
+          ? { width: alt.height, height: alt.width }
+          : { width: alt.width, height: alt.height };
+        jobs.push({ sizeId: size.id, displayName: size.displayName, width: altDims.width, height: altDims.height });
+      }
+    }
+  }
+
+  for (let i = 0; i < jobs.length; i++) {
+    const job = jobs[i];
 
     // Notify progress if callback provided
     if (onProgress) {
-      onProgress(i + 1, sizes.length, size.displayName);
+      onProgress(i + 1, jobs.length, job.displayName);
     }
 
-    // Resize the image
-    const resizedBlob = await resizeImage(file, width, height);
+    // Resize the image as JPEG (no alpha channel issues with App Store Connect)
+    const resizedBlob = await resizeImage(file, job.width, job.height, 'jpeg');
 
-    // Filename format: "iphone_6_9_1320x2868.png"
-    const filename = `${size.id}_${width}x${height}.png`;
+    // Filename format: "iphone_6_9_1290x2796.jpg"
+    const filename = `${job.sizeId}_${job.width}x${job.height}.jpg`;
 
     // Add to ZIP
     zip.file(filename, resizedBlob);
