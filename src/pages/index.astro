@@ -2,58 +2,89 @@
 import Layout from '../layouts/Layout.astro';
 import '../styles/global.css';
 
-const tools = [
+const toolSections = [
   {
-    name: 'Screenshot Resizer',
-    description: 'Resize screenshots for every iPhone and iPad size required by the App Store',
-    url: '/screenshot-resizer',
-    icon: '📱'
+    heading: 'Growth & experimentation',
+    tools: [
+      {
+        name: 'Screenshot Resizer',
+        description: 'Resize screenshots for every iPhone and iPad size required by the App Store',
+        url: '/screenshot-resizer',
+        icon: '📱'
+      },
+      {
+        name: 'Ad Profitability Calculator',
+        description: 'Calculate ROAS for Meta and Apple Search Ads. See if your ads are profitable and simulate scenarios.',
+        url: '/ad-profitability-calculator',
+        icon: '📊'
+      },
+      {
+        name: 'A/B Test Evaluator',
+        description: 'Evaluate your A/B test results. See what\'s significant, what to ignore, and how much longer to run.',
+        url: '/ab-test-evaluator',
+        icon: '🧪'
+      },
+      {
+        name: 'A/B Test Planner',
+        description: 'Plan your A/B test. See how many days you need to detect meaningful lifts at your scale.',
+        url: '/ab-test-planner',
+        icon: '📐'
+      }
+    ]
   },
   {
-    name: 'Ad Profitability Calculator',
-    description: 'Calculate ROAS for Meta and Apple Search Ads. See if your ads are profitable and simulate scenarios.',
-    url: '/ad-profitability-calculator',
-    icon: '📊'
-  },
-  {
-    name: 'A/B Test Evaluator',
-    description: 'Evaluate your A/B test results. See what\'s significant, what to ignore, and how much longer to run.',
-    url: '/ab-test-evaluator',
-    icon: '🧪'
-  },
-  {
-    name: 'A/B Test Planner',
-    description: 'Plan your A/B test. See how many days you need to detect meaningful lifts at your scale.',
-    url: '/ab-test-planner',
-    icon: '📐'
+    heading: 'For freelancers',
+    tools: [
+      {
+        name: 'Freelance Tax Helper',
+        description: 'Estimate quarterly tax payments from year-to-date income. Federal + state, SE tax, QBI. Runs in your browser.',
+        url: 'https://freelance-tax-helper.vercel.app/',
+        icon: '🧾',
+        external: true
+      },
+      {
+        name: 'Freelance Tracker',
+        description: 'Your freelance revenue, always visible. Menu-bar app that tracks hours, retainer caps, and running monthly projections.',
+        url: 'https://freelance-tracker-landing.vercel.app/#features',
+        icon: '📒',
+        external: true
+      }
+    ]
   }
 ];
 ---
 
 <Layout
-  title="Developer Tools by Dennis Lysenko"
-  description="Free, privacy-focused developer tools for iOS, web, and mobile development. Browser-based tools that respect your privacy."
+  title="Tools for indie founders & freelancers"
+  description="Free, privacy-focused browser tools for indie founders and freelancers. Growth, experimentation, and tax calculators that run entirely in your browser."
 >
   <main class="app-container">
     <div class="app-wrapper">
       <!-- Hero Section -->
       <header class="hero-section">
-        <h1 class="hero-title">Developer Tools</h1>
-        <p class="hero-description">Free, privacy-focused tools for developers</p>
+        <h1 class="hero-title">Tools for indie founders &amp; freelancers</h1>
+        <p class="hero-description">Free, privacy-focused browser tools for the people shipping their own stuff</p>
       </header>
 
       <!-- Tools Grid -->
-      <section class="tools-section">
-        <div class="tools-grid">
-          {tools.map(tool => (
-            <a href={tool.url} class="tool-card">
-              <div class="tool-icon">{tool.icon}</div>
-              <h2 class="tool-name">{tool.name}</h2>
-              <p class="tool-description">{tool.description}</p>
-            </a>
-          ))}
-        </div>
-      </section>
+      {toolSections.map(section => (
+        <section class="tools-section">
+          <h2 class="section-heading">{section.heading}</h2>
+          <div class="tools-grid">
+            {section.tools.map(tool => (
+              <a
+                href={tool.url}
+                class="tool-card"
+                {...(tool.external ? { target: '_blank', rel: 'noopener' } : {})}
+              >
+                <div class="tool-icon">{tool.icon}</div>
+                <h3 class="tool-name">{tool.name}</h3>
+                <p class="tool-description">{tool.description}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
 
       <!-- Footer -->
       <footer class="footer">
@@ -106,8 +137,19 @@ const tools = [
 
   /* Tools Section */
   .tools-section {
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .tools-section:last-of-type {
     flex: 1;
-    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .section-heading {
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
   }
 
   .tools-grid {

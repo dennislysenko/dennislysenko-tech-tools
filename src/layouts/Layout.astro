@@ -10,9 +10,9 @@ interface Props {
 }
 
 const {
-  title = 'Developer Tools by Dennis Lysenko',
-  description = 'Free, privacy-focused developer tools for iOS, web, and mobile development.',
-  keywords = 'developer tools, iOS tools, screenshot resizer, web tools, privacy-focused',
+  title = 'Tools for indie founders & freelancers',
+  description = 'Free, privacy-focused browser tools for indie founders and freelancers. Growth, experimentation, and tax calculators that run entirely in your browser.',
+  keywords = 'indie founder tools, freelancer tools, quarterly tax calculator, A/B test calculator, ROAS calculator, screenshot resizer',
   canonicalUrl = Astro.url.pathname,
   ogImage = '/og-image.jpg',
   ogType = 'website',
@@ -53,7 +53,7 @@ const fullOgImage = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astr
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={`${title} - Preview`} />
-    <meta property="og:site_name" content="Developer Tools by Dennis Lysenko" />
+    <meta property="og:site_name" content="Tools by Dennis Lysenko" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -65,7 +65,7 @@ const fullOgImage = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astr
     <!-- Apple-specific -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Dev Tools" />
+    <meta name="apple-mobile-web-app-title" content="Tools" />
 
     <!-- JSON-LD Structured Data -->
     {jsonLd && (
