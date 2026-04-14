@@ -2,7 +2,20 @@
 import Layout from '../layouts/Layout.astro';
 import '../styles/global.css';
 
-const toolSections = [
+interface Tool {
+  name: string;
+  description: string;
+  url: string;
+  icon: string;
+  external?: boolean;
+}
+
+interface ToolSection {
+  heading: string;
+  tools: Tool[];
+}
+
+const toolSections: ToolSection[] = [
   {
     heading: 'Growth & experimentation',
     tools: [
